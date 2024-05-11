@@ -6,7 +6,7 @@ import Link from "next/link";
 import React, { useCallback } from "react";
 
 const Profile = () => {
-  const { session } = useAuth();
+  const jwt = useAuth();
 
   const handleLogoutClick = useCallback(async () => {
     signOut({ callbackUrl: "/login" });
@@ -34,10 +34,10 @@ const Profile = () => {
 
   return (
     <>
-      <div className="ml-2">Administrator</div>
+      <div className="ml-2">{jwt?.name}</div>
       <Dropdown menu={{ items }} trigger={["click"]}>
         <button className="flex items-center px-2 text-gray-600 rounded hover:bg-gray-200 enable-transition">
-          <span className="sm:max-w-[10rem] ellipsis-text">{session.user.login}</span>
+          <span className="sm:max-w-[10rem] ellipsis-text">{jwt?.email}</span>
           <ChevronDown className="w-5 h-5" />
         </button>
       </Dropdown>

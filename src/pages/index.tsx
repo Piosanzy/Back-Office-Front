@@ -10,12 +10,12 @@ const pageHeader: IPageHeader = {
 };
 
 const IndexPage: IDefaultLayoutPage = () => {
-  const { session } = useAuth();
+  const { jwt } = useAuth();
   const { data, error } = useDashboard();
 
   return (
-    <>
-      <h2 className="title">👋 {session.user.name || "관리자"}님 안녕하세요!</h2>
+    <div>
+      <h2 className="title">👋 {jwt?.name}님 안녕하세요!</h2>
 
       <div className="my-5">
         {data ? (
@@ -32,7 +32,7 @@ const IndexPage: IDefaultLayoutPage = () => {
       <h3 className="title">달력</h3>
 
       <CalendarSample />
-    </>
+    </div>
   );
 };
 

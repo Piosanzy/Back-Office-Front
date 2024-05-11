@@ -3,7 +3,8 @@ import { Alert, Button, Form, Input } from "antd";
 import { useForm } from "antd/lib/form/Form";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/router";
-import React, { useCallback, useState } from "react";
+import React, {useCallback, useEffect, useState} from "react";
+import {useCookies} from "react-cookie";
 
 interface ILoginFormValue {
   username: string;
@@ -20,7 +21,6 @@ const LoginForm = () => {
     setIsLoading(true);
 
     try {
-      console.log(value);
       await signIn("login-credentials", { username: value.username, password: value.password });
     } catch (error) {
       setIsLoading(false);
@@ -35,7 +35,7 @@ const LoginForm = () => {
         </div>
       ) : null}
       <div className="grid grid-cols-1 gap-2">
-        <a className="flex items-center justify-center h-20 grow btn" onClick={() => signIn("google")}>
+        <a className="flex items-center justify-center h-20 grow btn" onClick={() => {location.href="http://localhost:8081/auth/google/login"}}>
           <svg width="29" height="29" viewBox="0 0 33 33" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path
               d="M30 16.0745c0-.9239-.0756-1.8534-.2352-2.7644H16.9335v5.2394h7.348a6.2977 6.2977 0 0 1-.9369 2.3457c-.4675.7106-1.0742 1.3191-1.7833 1.7888v3.3989h4.384C28.5201 23.7134 30 20.2147 30 16.0745Z"

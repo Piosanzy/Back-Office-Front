@@ -1,18 +1,16 @@
-/**
- * 백오피스 특성상 기본적으로 인증 필요
- * 인증된 사용자 정보를 얻거나 로그인 페이지로 이동
- */
 import Spinner from "@/components/shared/spinner";
-import { Session } from "next-auth";
-import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import React, { createContext, PropsWithChildren, useContext, useEffect } from "react";
+import {useCookies} from "react-cookie";
+import { useJwt } from "react-jwt";
+import {Simulate} from "react-dom/test-utils";
+import load = Simulate.load;
 
 interface IAuthProviderProps {}
 
 interface IAuthContext {
   initialized: boolean;
-  session: Session;
+  jwt: any;
 }
 
 export const AuthContext = createContext<IAuthContext | null>(null);
@@ -33,22 +31,19 @@ const isPublicPage = (pathname: string) => {
 
 const AuthProvider = ({ children }: PropsWithChildren<IAuthProviderProps>) => {
   const router = useRouter();
-  const { data: session, status } = useSession();
-  const loading = status === "loading";
+  const [cookies, setCookie, removeCookie] = useCookies(['authorization']);
+  const { decodedToken, isExpired } = useJwt<{name: string, email: string}>(cookies.authorization);
 
   useEffect(() => {
-    if (loading) {
-      return;
-    }
-
-    if (session && isPublicPage(router.pathname)) {
+    if (cookies.authorization && !isExpired && isPublicPage(router.pathname)) {
       router.push("/");
-    } else if (!session && !isPublicPage(router.pathname)) {
+    } else if (!cookies.authorization && !isPublicPage(router.pathname)) {
+      removeCookie('authorization');
       router.push("/login");
     }
-  }, [loading, router, session]);
+  }, [router, cookies.authorization, isExpired]);
 
-  if (loading || (session && isPublicPage(router.pathname))) {
+  if (cookies.authorization && !isExpired && isPublicPage(router.pathname)) {
     return <Spinner />;
   }
 
@@ -56,11 +51,11 @@ const AuthProvider = ({ children }: PropsWithChildren<IAuthProviderProps>) => {
     return <>{children}</>;
   }
 
-  if (!session?.user) {
+  if (!cookies?.authorization) {
     return <Spinner />;
   }
 
-  return <AuthContext.Provider value={{ initialized: true, session }}>{children}</AuthContext.Provider>;
+  return <AuthContext.Provider value={{ initialized: true, jwt: decodedToken }}>{children}</AuthContext.Provider>;
 };
 
 export default React.memo(AuthProvider);
