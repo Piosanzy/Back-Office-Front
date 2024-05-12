@@ -9,4 +9,6 @@ services:
       dockerfile: Dockerfile
     ports:
       - ${SERVER_PORT}:${SERVER_PORT}
+    environment:
+      PORT: ${SERVER_PORT}
     stdin_open: true
