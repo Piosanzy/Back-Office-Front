@@ -16,8 +16,8 @@ const Sidebar = ({ isShowSidebar, hideSidebar }: ISidebarProps) => {
       <div className="flex flex-col h-full">
         <div className="flex">
           <div className="shrink-0">
-            <Link href="/" className="flex items-center justify-center w-12 h-12 text-white rounded-lg bg-turquoise">
-              P
+            <Link href="/" className="flex items-center justify-center w-12 h-12 text-white rounded-lg">
+              <img src="/img/logo/logo_removedBackground.png" alt="logo" />
             </Link>
           </div>
           <div className="ml-1 grow">

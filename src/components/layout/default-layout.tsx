@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { ChevronRight, Menu as MenuIcon } from "lucide-react";
 import { NextComponentType, NextPage } from "next";
 import { useRouter } from "next/router";
-import { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import MainMenu from "./main-menu";
 import MenuBtn from "./menu-btn";
 import PageHeader from "./page-header";
@@ -55,8 +55,10 @@ const DefaultLayout = ({ Page, ...props }: IDefaultLayoutProps) => {
       {/* mobile navigation */}
       <div className="z-40 flex items-center justify-between px-5 border-b h-14 sm:hidden">
         <div className="flex items-center">
-          <div className="flex items-center justify-center w-8 h-8 text-white rounded-lg bg-turquoise">P</div>
-          <div className="ml-3 text-lg text-black">Purple Admin UI</div>
+          <div className="flex items-center justify-center w-8 h-8 text-white rounded-lg">
+            <img src="/img/logo/logo_removedBackground.png" alt="logo" />
+          </div>
+          <div className="ml-3 text-lg text-black">AI Shorts Maker</div>
         </div>
         <div>
           <MenuBtn isActive={isShowPopupMenu} setActive={setActive} />
