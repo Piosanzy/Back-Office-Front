@@ -46,11 +46,9 @@ export default function App({ Component, pageProps: { session, ...pageProps } }:
         locale={koKR}
       >
         <SWRConfig value={{ fetcher, revalidateOnFocus: false }}>
-          <SessionProvider session={session}>
-            <AuthProvider>
-              <main className={`${pretendard.variable} font-sans`}>{getLayout(Component, pageProps)}</main>
-            </AuthProvider>
-          </SessionProvider>
+          <AuthProvider>
+            <main className={`${pretendard.variable} font-sans`}>{getLayout(Component, pageProps)}</main>
+          </AuthProvider>
         </SWRConfig>
       </ConfigProvider>
     </>

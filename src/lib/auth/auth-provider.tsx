@@ -3,16 +3,17 @@
  * 인증된 사용자 정보를 얻거나 로그인 페이지로 이동
  */
 import Spinner from "@/components/shared/spinner";
-import { Session } from "next-auth";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/router";
-import React, { createContext, PropsWithChildren, useContext, useEffect } from "react";
+import {useCookies} from "react-cookie";
+import {useJwt} from "react-jwt";
+import {useRouter} from "next/router";
+import React, {createContext, PropsWithChildren, useContext, useEffect} from "react";
 
-interface IAuthProviderProps {}
+interface IAuthProviderProps {
+}
 
 interface IAuthContext {
   initialized: boolean;
-  session: Session;
+  userInfo: any;
 }
 
 export const AuthContext = createContext<IAuthContext | null>(null);
@@ -31,24 +32,23 @@ const isPublicPage = (pathname: string) => {
   return publicPageList.includes(pathname);
 };
 
-const AuthProvider = ({ children }: PropsWithChildren<IAuthProviderProps>) => {
+const AuthProvider = ({children}: PropsWithChildren<IAuthProviderProps>) => {
   const router = useRouter();
-  const { data: session, status } = useSession();
-  const loading = status === "loading";
+  const [cookies, setCookie, removeCookie] = useCookies(['authorization']);
+  const {decodedToken, isExpired} = useJwt<{name: string, email: string}>(cookies.authorization);
 
   useEffect(() => {
-    if (loading) {
-      return;
-    }
-
-    if (session && isPublicPage(router.pathname)) {
+    if (decodedToken && isPublicPage(router.pathname)) {
       router.push("/");
-    } else if (!session && !isPublicPage(router.pathname)) {
+    } else if (!decodedToken && !isPublicPage(router.pathname)) {
+      router.push("/login");
+    } else if (decodedToken && isExpired && !isPublicPage(router.pathname)) {
+      removeCookie('authorization');
       router.push("/login");
     }
-  }, [loading, router, session]);
+  }, [router, decodedToken, isExpired]);
 
-  if (loading || (session && isPublicPage(router.pathname))) {
+  if (decodedToken && isPublicPage(router.pathname)) {
     return <Spinner />;
   }
 
@@ -56,11 +56,11 @@ const AuthProvider = ({ children }: PropsWithChildren<IAuthProviderProps>) => {
     return <>{children}</>;
   }
 
-  if (!session?.user) {
+  if (!decodedToken?.name) {
     return <Spinner />;
   }
 
-  return <AuthContext.Provider value={{ initialized: true, session }}>{children}</AuthContext.Provider>;
+  return <AuthContext.Provider value={{ initialized: true, userInfo: decodedToken }}>{children}</AuthContext.Provider>;
 };
 
 export default React.memo(AuthProvider);

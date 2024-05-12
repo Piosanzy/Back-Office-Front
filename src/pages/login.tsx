@@ -20,7 +20,7 @@ const LoginPage = () => {
           <section className="w-full px-5 pb-10 text-gray-800 sm:w-4/6 md:w-3/6 lg:w-4/6 xl:w-3/6 sm:px-0">
             <div className="flex flex-col items-center justify-center px-2 mt-8 sm:mt-0">
               <h2 className="mt-2 text-5xl font-bold leading-tight inter">AI Shorts Maker</h2>
-              <div className="mt-1 text-lg text-gray-400">AI로 간단하게 숏츠 만드는 법!</div>
+              <div className="mt-1 text-lg text-gray-400">숏츠를 만드는 새로운 방법!</div>
             </div>
 
             <div className="w-full px-2 mt-12 sm:px-6">
