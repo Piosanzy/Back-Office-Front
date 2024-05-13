@@ -1,8 +1,9 @@
+import { useDashboard } from "@/client/sample/dashboard";
 import { getDefaultLayout, IDefaultLayoutPage, IPageHeader } from "@/components/layout/default-layout";
 import CalendarSample from "@/components/page/index/calendar-sample";
+import StatisticSample from "@/components/page/index/statistic-sample";
 import { useAuth } from "@/lib/auth/auth-provider";
 import { Alert, Divider, Skeleton } from "antd";
-import PageDescription from "@/components/module/PageDescription";
 
 const pageHeader: IPageHeader = {
   title: "Welcome",
@@ -10,13 +11,20 @@ const pageHeader: IPageHeader = {
 
 const IndexPage: IDefaultLayoutPage = () => {
   const { userInfo } = useAuth();
+  const { data, error } = useDashboard();
 
   return (
     <>
-      <PageDescription>👋 {userInfo?.name || "관리자"}님 안녕하세요!</PageDescription>
+      <h2 className="title">👋 {userInfo?.name || "관리자"}님 안녕하세요!</h2>
 
       <div className="my-5">
-        <Alert message="대시보드 API 호출 중 오류가 발생했습니다." type="warning" />
+        {data ? (
+          <StatisticSample data={data} />
+        ) : error ? (
+          <Alert message="대시보드 API 호출 중 오류가 발생했습니다." type="warning" />
+        ) : (
+          <Skeleton />
+        )}
       </div>
 
       <Divider />
